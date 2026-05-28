@@ -62,6 +62,25 @@ app.post("/habits/:habitId/toggle", async (req, res) => {
     res.send("toggle ok");
 });
 
+app.get("/habits/:habitId/status", async (req, res) => {
+    const { habitId } = req.params;
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const { data: existingLog } = await supabase
+        .from("habit_logs")
+        .select("*")
+        .eq("habit_id", habitId)
+        .eq("date", today)
+        .maybeSingle();
+
+    res.json({
+        completed: existingLog ? existingLog.completed : false,
+    });
+});
+
+
+
 app.listen(3000, () => {
     console.log("Server running");
 });

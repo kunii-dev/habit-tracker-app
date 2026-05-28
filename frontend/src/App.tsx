@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const [completed, setCompleted] = useState(false);
@@ -15,6 +15,22 @@ function App() {
   };
 
   console.log(completed);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      const response = await fetch(
+        "http://localhost:3000/habits/9555704e-5dfa-4760-96c8-c17f6b002213/status"
+      );
+
+      const data = await response.json();
+
+      console.log(data);
+
+      setCompleted(data.completed);
+    };
+
+    fetchStatus();
+  }, []);
 
   return (
     <div>
