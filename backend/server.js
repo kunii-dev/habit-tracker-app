@@ -1,4 +1,6 @@
 require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
 
 const { createClient } = require("@supabase/supabase-js");
 
@@ -7,9 +9,8 @@ const supabase = createClient(
     process.env.SUPABASE_ANON_KEY
 );
 
-const express = require("express");
-
 const app = express();
+app.use(cors());
 
 app.post("/habits/:habitId/toggle", async (req, res) => {
     const { habitId } = req.params;
