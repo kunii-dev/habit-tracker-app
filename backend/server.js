@@ -79,7 +79,20 @@ app.get("/habits/:habitId/status", async (req, res) => {
     });
 });
 
+app.get("/habits/:habitId", async (req, res) => {
+    const { habitId } = req.params;
 
+    const { data, error } = await supabase
+        .from("habits")
+        .select("*")
+        .eq("id", habitId)
+        .single();
+
+    console.log(data);
+    console.log(error);
+
+    res.json(data);
+});
 
 app.listen(3000, () => {
     console.log("Server running");
