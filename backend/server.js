@@ -94,6 +94,7 @@ app.get("/habits/:habitId", async (req, res) => {
     res.json(data);
 });
 
+//DB一覧取得
 app.get("/habits", async (req, res) => {
     const { data, error } = await supabase
         .from("habits")
