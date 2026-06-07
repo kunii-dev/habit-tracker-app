@@ -1,24 +1,24 @@
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
-
 const { createClient } = require("@supabase/supabase-js");
 
+const app = express();
+app.use(cors());
+
+//Supabase接続
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
 );
 
-const app = express();
-app.use(cors());
-
+//今日のログを更新して、習慣をトグル
 app.post("/habits/:habitId/toggle", async (req, res) => {
     const { habitId } = req.params;
-
-    console.log(habitId);
-
     const today = new Date().toISOString().split("T")[0];
 
+    //今日のログを取得
     const { data: existingLog, error } = await supabase
         .from("habit_logs")
         .select("*")
@@ -26,10 +26,8 @@ app.post("/habits/:habitId/toggle", async (req, res) => {
         .eq("date", today)
         .maybeSingle()
 
-    console.log(existingLog);
-    console.log(error);
-
     if (existingLog) {
+        //ログがある場合は完了状態を反転
         await supabase
             .from("habit_logs")
             .update({
@@ -37,17 +35,8 @@ app.post("/habits/:habitId/toggle", async (req, res) => {
             })
             .eq("id", existingLog.id);
 
-        console.log("UPDATE DONE");
-
-        const { data: updatedLog } = await supabase
-            .from("habit_logs")
-            .select("*")
-            .eq("id", existingLog.id)
-            .single();
-
-        console.log(updatedLog);
-
     } else {
+        //ログがない場合は新規作成
         await supabase
             .from("habit_logs")
             .insert({
@@ -55,16 +44,14 @@ app.post("/habits/:habitId/toggle", async (req, res) => {
                 date: today,
                 completed: true,
             });
-
-        console.log("INSERT DONE");
     }
 
     res.send("toggle ok");
 });
 
+//今日の完了状態を取得
 app.get("/habits/:habitId/status", async (req, res) => {
     const { habitId } = req.params;
-
     const today = new Date().toISOString().split("T")[0];
 
     const { data: existingLog } = await supabase
@@ -79,22 +66,7 @@ app.get("/habits/:habitId/status", async (req, res) => {
     });
 });
 
-app.get("/habits/:habitId", async (req, res) => {
-    const { habitId } = req.params;
-
-    const { data, error } = await supabase
-        .from("habits")
-        .select("*")
-        .eq("id", habitId)
-        .single();
-
-    console.log(data);
-    console.log(error);
-
-    res.json(data);
-});
-
-//DB一覧取得
+//DBから習慣一覧を取得
 app.get("/habits", async (req, res) => {
     const { data, error } = await supabase
         .from("habits")
