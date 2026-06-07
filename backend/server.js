@@ -94,6 +94,17 @@ app.get("/habits/:habitId", async (req, res) => {
     res.json(data);
 });
 
+app.get("/habits", async (req, res) => {
+    const { data, error } = await supabase
+        .from("habits")
+        .select("*");
+
+    console.log(data);
+    console.log(error);
+
+    res.json(data);
+});
+
 app.listen(3000, () => {
     console.log("Server running");
 });

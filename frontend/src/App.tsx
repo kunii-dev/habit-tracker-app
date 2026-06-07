@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 
+
+type Habit = {
+  id: string;
+  name: string;
+};
+
 function App() {
   const [completed, setCompleted] = useState(false);
   const [habitName, setHabitName] = useState("");
+  const [habits, setHabits] = useState<Habit[]>([]);
 
   const toggleHabit = async () => {
     await fetch(
@@ -26,6 +33,18 @@ function App() {
     setHabitName(data.name);
   };
 
+  const fetchHabits = async () => {
+    const response = await fetch(
+      "http://localhost:3000/habits"
+    );
+
+    const data = await response.json();
+
+    console.log(data);
+
+    setHabits(data);
+  };
+
   useEffect(() => {
     const fetchStatus = async () => {
       const response = await fetch(
@@ -39,10 +58,17 @@ function App() {
 
     fetchStatus();
     fetchHabit();
+    fetchHabits();
   }, []);
 
   return (
     <div>
+      {habits.map((habit) => (
+        <div key={habit.id}>
+          {habit.name}
+        </div>
+      ))}
+
       <button onClick={toggleHabit}>
         {completed ? "☑" : "☐"}{habitName}
       </button>
