@@ -48,8 +48,8 @@ function App() {
 
     const newHabits = [];
 
-    //箱を作り、箱にDB取得データを入れた
-    //箱にはcompletedのデータも追加した
+    // DBから取得した習慣一覧に
+    // completed を追加してReactで管理する
     for (const habit of data) {
       newHabits.push({
         id: habit.id,
@@ -62,17 +62,6 @@ function App() {
   };
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      const response = await fetch(
-        "http://localhost:3000/habits/9555704e-5dfa-4760-96c8-c17f6b002213/status"
-      );
-
-      const data = await response.json();
-
-      setCompleted(data.completed);
-    };
-
-    fetchStatus();
     fetchHabits();
   }, []);
 
