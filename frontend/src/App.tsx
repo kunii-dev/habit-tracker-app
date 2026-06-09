@@ -36,7 +36,7 @@ function App() {
     );
   };
 
-  //DBデータの一覧を取得した
+  //ExpressからDBデータの一覧を取得した
   const fetchHabits = async () => {
     const response = await fetch(
       "http://localhost:3000/habits"
@@ -44,21 +44,7 @@ function App() {
 
     const data = await response.json();
 
-    console.log(data);
-
-    const newHabits = [];
-
-    // DBから取得した習慣一覧に
-    // completed を追加してReactで管理する
-    for (const habit of data) {
-      newHabits.push({
-        id: habit.id,
-        name: habit.name,
-        completed: false,
-      });
-    }
-
-    setHabits(newHabits);
+    setHabits(data);
   };
 
   useEffect(() => {

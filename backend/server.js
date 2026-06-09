@@ -66,16 +66,32 @@ app.get("/habits/:habitId/status", async (req, res) => {
     });
 });
 
-//DBから習慣一覧を取得
+//DBからhabitsとhabit_logを取得
 app.get("/habits", async (req, res) => {
-    const { data, error } = await supabase
+    const today = new Date().toISOString().split("T")[0];
+
+    const { data: habits } = await supabase
         .from("habits")
         .select("*");
 
-    console.log(data);
-    console.log(error);
+    const { data: logs } = await supabase
+        .from("habit_logs")
+        .select("*")
+        .eq("date", today);
 
-    res.json(data);
+    //habitとhabit_logのcompletedを合体
+    const habitsWithStatus = habits.map((habit) => {
+        const log = logs.find(
+            (log) => log.habit_id === habit.id
+        );
+
+        return {
+            ...habit,
+            completed: log ? log.completed : false,
+        };
+    });
+
+    res.json(habitsWithStatus);
 });
 
 app.listen(3000, () => {
