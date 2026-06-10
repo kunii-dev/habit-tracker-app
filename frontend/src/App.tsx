@@ -8,7 +8,6 @@ type Habit = {
 };
 
 function App() {
-  const [completed, setCompleted] = useState(false);
   const [habits, setHabits] = useState<Habit[]>([]);
 
   //クリックした習慣ごとにトグルを連動させる
@@ -19,7 +18,6 @@ function App() {
         method: "POST",
       }
     );
-    setCompleted(!completed);
 
     //クリックした習慣はトグル切り替え、他の習慣は切り替わらない
     setHabits(
