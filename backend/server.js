@@ -8,18 +8,20 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-//Supabase接続
+//Supabaseと接続
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY
 );
 
-//今日のログを更新して、習慣をトグル
+//DBのhabitデータを変更する
+//ユーザーが今日の習慣を完了し、
+//ReactのonClickによって起動する
 app.post("/habits/:habitId/toggle", async (req, res) => {
     const { habitId } = req.params;
     const today = new Date().toISOString().split("T")[0];
 
-    //今日のログを取得
+    //DBから今日のログを取得
     const { data: existingLog, error } = await supabase
         .from("habit_logs")
         .select("*")
@@ -28,7 +30,7 @@ app.post("/habits/:habitId/toggle", async (req, res) => {
         .maybeSingle()
 
     if (existingLog) {
-        //ログがある場合は完了状態を反転
+        //ログがある場合はトグルを☑にする
         await supabase
             .from("habit_logs")
             .update({
@@ -37,7 +39,7 @@ app.post("/habits/:habitId/toggle", async (req, res) => {
             .eq("id", existingLog.id);
 
     } else {
-        //ログがない場合は新規作成
+        //ログがない場合はログデータを新規作成
         await supabase
             .from("habit_logs")
             .insert({
@@ -50,24 +52,7 @@ app.post("/habits/:habitId/toggle", async (req, res) => {
     res.send("toggle ok");
 });
 
-//今日の完了状態を取得
-app.get("/habits/:habitId/status", async (req, res) => {
-    const { habitId } = req.params;
-    const today = new Date().toISOString().split("T")[0];
-
-    const { data: existingLog } = await supabase
-        .from("habit_logs")
-        .select("*")
-        .eq("habit_id", habitId)
-        .eq("date", today)
-        .maybeSingle();
-
-    res.json({
-        completed: existingLog ? existingLog.completed : false,
-    });
-});
-
-//DBからhabitsとhabit_logを取得
+//DBからhabitsとhabit_logを取得(Express←DB)
 app.get("/habits", async (req, res) => {
     const today = new Date().toISOString().split("T")[0];
 
@@ -96,7 +81,7 @@ app.get("/habits", async (req, res) => {
 });
 
 //新しいHabitの追加
-//Reactからの要求をreq.bodyで受け取る
+//Reactからの送信をreq.bodyで受け取る(React→Express)
 app.post("/habits", async (req, res) => {
     const { name } = req.body;
 

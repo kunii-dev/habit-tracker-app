@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 type Habit = {
   id: string;
   name: string;
@@ -10,6 +9,17 @@ type Habit = {
 function App() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [name, setName] = useState("");
+
+  //ExpressからDBデータの一覧を取得する
+  const fetchHabits = async () => {
+    const response = await fetch(
+      "http://localhost:3000/habits"
+    );
+
+    const data = await response.json();
+
+    setHabits(data);
+  };
 
   //クリックした習慣ごとにトグルを連動させる
   const toggleHabit = async (habitId: string) => {
@@ -52,17 +62,6 @@ function App() {
 
     await fetchHabits();
     setName("");
-  };
-
-  //ExpressからDBデータの一覧を取得した
-  const fetchHabits = async () => {
-    const response = await fetch(
-      "http://localhost:3000/habits"
-    );
-
-    const data = await response.json();
-
-    setHabits(data);
   };
 
   useEffect(() => {
