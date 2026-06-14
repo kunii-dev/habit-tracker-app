@@ -9,6 +9,7 @@ type Habit = {
 
 function App() {
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [name, setName] = useState("");
 
   //クリックした習慣ごとにトグルを連動させる
   const toggleHabit = async (habitId: string) => {
@@ -34,6 +35,25 @@ function App() {
     );
   };
 
+  //新しいHabitの追加（Expressへ送信）
+  const addHabit = async () => {
+    await fetch(
+      "http://localhost:3000/habits",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+        }),
+      }
+    );
+
+    await fetchHabits();
+    setName("");
+  };
+
   //ExpressからDBデータの一覧を取得した
   const fetchHabits = async () => {
     const response = await fetch(
@@ -51,6 +71,15 @@ function App() {
 
   return (
     <div>
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+
+      <button onClick={addHabit}>
+        追加
+      </button>
+
       {habits.map((habit) => (
         <button
           key={habit.id}

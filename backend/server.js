@@ -6,6 +6,7 @@ const { createClient } = require("@supabase/supabase-js");
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 //Supabase接続
 const supabase = createClient(
@@ -92,6 +93,21 @@ app.get("/habits", async (req, res) => {
     });
 
     res.json(habitsWithStatus);
+});
+
+//新しいHabitの追加
+//Reactからの要求をreq.bodyで受け取る
+app.post("/habits", async (req, res) => {
+    const { name } = req.body;
+
+    const { data, error } = await supabase
+        .from("habits")
+        .insert({
+            name: name,
+            user_id: "00000000-0000-0000-0000-000000000000",
+        });
+
+    res.send("habit create ok");
 });
 
 app.listen(3000, () => {
