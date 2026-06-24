@@ -48,7 +48,10 @@ function App() {
   //新しいHabitの追加（Expressへ送信）
   const addHabit = async () => {
 
-    if (!name.trim()) {
+    const trimmedName = name.trim();
+
+    if (!trimmedName) {
+      setName("");
       return;
     }
 
@@ -60,7 +63,7 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: name,
+          name: trimmedName,
         }),
       }
     );
