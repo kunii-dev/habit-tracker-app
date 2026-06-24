@@ -66,6 +66,12 @@ function App() {
 
   //Habitの削除（Expressへ送信）
   const deleteHabit = async (habitId: string) => {
+
+    const result = confirm("本当に削除しますか？");
+    if (!result) {
+      return;
+    }
+
     await fetch(
       `http://localhost:3000/habits/${habitId}`,
       {
