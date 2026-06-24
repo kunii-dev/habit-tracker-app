@@ -47,6 +47,11 @@ function App() {
 
   //新しいHabitの追加（Expressへ送信）
   const addHabit = async () => {
+
+    if (!name.trim()) {
+      return;
+    }
+
     await fetch(
       "http://localhost:3000/habits",
       {
