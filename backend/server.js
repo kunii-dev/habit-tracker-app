@@ -95,6 +95,20 @@ app.post("/habits", async (req, res) => {
     res.send("habit create ok");
 });
 
+//habitの削除
+app.delete("/habits/:habitId", async (req, res) => {
+    const { habitId } = req.params;
+
+    console.log(habitId);
+
+    await supabase
+        .from("habits")
+        .delete()
+        .eq("id", habitId);
+
+    res.send("delete ok");
+});
+
 app.listen(3000, () => {
     console.log("Server running");
 });

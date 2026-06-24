@@ -1,6 +1,1 @@
-POST http://localhost:3000/habits
-Content-Type: application/json
-
-{
-  "name": "読書（今回追加）"
-}
+DELETE http://localhost:3000/habits/c6c70ab5-64b5-4601-b2c0-9a76ae439e20

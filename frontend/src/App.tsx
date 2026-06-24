@@ -64,6 +64,18 @@ function App() {
     setName("");
   };
 
+  //Habitの削除（Expressへ送信）
+  const deleteHabit = async (habitId: string) => {
+    await fetch(
+      `http://localhost:3000/habits/${habitId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    await fetchHabits();
+  };
+
   useEffect(() => {
     fetchHabits();
   }, []);
@@ -80,12 +92,15 @@ function App() {
       </button>
 
       {habits.map((habit) => (
-        <button
-          key={habit.id}
-          onClick={() => toggleHabit(habit.id)}
-        >
-          {habit.completed ? "☑" : "☐"} {habit.name}
-        </button>
+        <div key={habit.id}>
+          <button onClick={() => toggleHabit(habit.id)}>
+            {habit.completed ? "☑" : "☐"} {habit.name}
+          </button>
+
+          <button onClick={() => deleteHabit(habit.id)}>
+            削除
+          </button>
+        </div>
       ))}
     </div>
   );
