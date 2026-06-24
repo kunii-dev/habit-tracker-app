@@ -99,8 +99,13 @@ app.post("/habits", async (req, res) => {
 app.delete("/habits/:habitId", async (req, res) => {
     const { habitId } = req.params;
 
-    console.log(habitId);
+    // 関連するログを削除
+    await supabase
+        .from("habit_logs")
+        .delete()
+        .eq("habit_id", habitId);
 
+    // 習慣を削除
     await supabase
         .from("habits")
         .delete()
