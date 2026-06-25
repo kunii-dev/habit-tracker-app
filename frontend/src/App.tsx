@@ -96,6 +96,13 @@ function App() {
 
   //Habit名の編集
   const updateHabit = async (habitId: string) => {
+
+    const trimmedName = editingName.trim();
+
+    if (trimmedName === "") {
+      return;
+    }
+
     await fetch(
       `http://localhost:3000/habits/${habitId}`,
       {
@@ -104,7 +111,7 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: editingName,
+          name: trimmedName,
         }),
       }
     );
