@@ -130,9 +130,14 @@ function App() {
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            addHabit();
+          }
+        }}
       />
 
-      <button onClick={addHabit}>
+      <button onClick={addHabit} >
         追加
       </button>
 
@@ -146,8 +151,12 @@ function App() {
               <input
                 value={editingName}
                 onChange={(e) =>
-                  setEditingName(e.target.value)
-                }
+                  setEditingName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    updateHabit(habit.id);
+                  }
+                }}
               />
 
               <button
@@ -188,8 +197,9 @@ function App() {
             削除
           </button>
         </div>
-      ))}
-    </div>
+      ))
+      }
+    </div >
   );
 }
 
