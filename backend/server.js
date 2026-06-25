@@ -95,7 +95,7 @@ app.post("/habits", async (req, res) => {
     res.send("habit create ok");
 });
 
-//habitの削除
+//Habitの削除
 app.delete("/habits/:habitId", async (req, res) => {
     const { habitId } = req.params;
 
@@ -112,6 +112,21 @@ app.delete("/habits/:habitId", async (req, res) => {
         .eq("id", habitId);
 
     res.send("delete ok");
+});
+
+//Habit名の編集
+app.patch("/habits/:habitId", async (req, res) => {
+    const { habitId } = req.params;
+    const { name } = req.body;
+
+    await supabase
+        .from("habits")
+        .update({
+            name: name,
+        })
+        .eq("id", habitId);
+
+    res.send("update ok");
 });
 
 app.listen(3000, () => {

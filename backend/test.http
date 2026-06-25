@@ -1,1 +1,6 @@
-DELETE http://localhost:3000/habits/c6c70ab5-64b5-4601-b2c0-9a76ae439e20
+PATCH http://localhost:3000/habits/cff0165d-002d-4342-90d9-dda9f0b5af59
+Content-Type: application/json
+
+{
+    "name": "毎日筋トレ"
+}

@@ -9,6 +9,10 @@ type Habit = {
 function App() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [name, setName] = useState("");
+  const [editingHabitId, setEditingHabitId] =
+    useState<string | null>(null);
+  const [editingName, setEditingName] =
+    useState("");
 
   //ExpressからDBデータの一覧を取得する
   const fetchHabits = async () => {
@@ -90,6 +94,26 @@ function App() {
     await fetchHabits();
   };
 
+  //Habit名の編集
+  const updateHabit = async (habitId: string) => {
+    await fetch(
+      `http://localhost:3000/habits/${habitId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: editingName,
+        }),
+      }
+    );
+
+    await fetchHabits();
+    setEditingHabitId(null);
+    setEditingName("");
+  };
+
   useEffect(() => {
     fetchHabits();
   }, []);
@@ -108,8 +132,41 @@ function App() {
       {habits.map((habit) => (
         <div key={habit.id}>
           <button onClick={() => toggleHabit(habit.id)}>
-            {habit.completed ? "☑" : "☐"} {habit.name}
+            {habit.completed ? "☑" : "☐"}
           </button>
+          {editingHabitId === habit.id ? (
+            <>
+              <input
+                value={editingName}
+                onChange={(e) =>
+                  setEditingName(e.target.value)
+                }
+              />
+
+              <button
+                onClick={() => updateHabit(habit.id)}
+              >
+                保存
+              </button>
+            </>
+          )
+            : (
+              <span>{habit.name}</span>
+            )
+          }
+
+          {
+            editingHabitId !== habit.id && (
+              <button
+                onClick={() => {
+                  setEditingHabitId(habit.id);
+                  setEditingName(habit.name);
+                }}
+              >
+                編集
+              </button>
+            )
+          }
 
           <button onClick={() => deleteHabit(habit.id)}>
             削除
