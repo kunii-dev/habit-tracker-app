@@ -148,6 +148,15 @@ function App() {
               >
                 保存
               </button>
+
+              <button
+                onClick={() => {
+                  setEditingHabitId(null);
+                  setEditingName("");
+                }}>
+                キャンセル
+              </button>
+
             </>
           )
             : (
