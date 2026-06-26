@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Toaster, toast } from "react-hot-toast";
 
 type Habit = {
   id: string;
@@ -73,6 +74,7 @@ function App() {
     );
 
     await fetchHabits();
+    toast.success("習慣を追加しました");
     setName("");
   };
 
@@ -92,6 +94,7 @@ function App() {
     );
 
     await fetchHabits();
+    toast.success("習慣を削除しました");
   };
 
   //Habit名の編集
@@ -117,6 +120,8 @@ function App() {
     );
 
     await fetchHabits();
+    toast.success("習慣を更新しました");
+
     setEditingHabitId(null);
     setEditingName("");
   };
@@ -127,6 +132,8 @@ function App() {
 
   return (
     <div>
+      <Toaster />
+
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
