@@ -28,26 +28,32 @@ function App() {
 
   //クリックした習慣ごとにトグルを連動させる
   const toggleHabit = async (habitId: string) => {
-    await fetch(
-      `http://localhost:3000/habits/${habitId}/toggle`,
-      {
-        method: "POST",
-      }
-    );
 
-    //クリックした習慣はトグル切り替え、他の習慣は切り替わらない
-    setHabits(
-      habits.map((habit) => {
-        if (habit.id === habitId) {
-          return {
-            ...habit,
-            completed: !habit.completed,
-          };
+    try {
+      await fetch(
+        `http://localhost:3000/habits/${habitId}/toggle`,
+        {
+          method: "POST",
         }
+      );
 
-        return habit;
-      })
-    );
+      //クリックした習慣はトグル切り替え、他の習慣は切り替わらない
+      setHabits(
+        habits.map((habit) => {
+          if (habit.id === habitId) {
+            return {
+              ...habit,
+              completed: !habit.completed,
+            };
+          }
+
+          return habit;
+        })
+      );
+
+    } catch {
+      toast.error("習慣の更新に失敗しました");
+    }
   };
 
   //新しいHabitの追加（Expressへ送信）
@@ -60,22 +66,27 @@ function App() {
       return;
     }
 
-    await fetch(
-      "http://localhost:3000/habits",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: trimmedName,
-        }),
-      }
-    );
+    try {
+      await fetch(
+        "http://localhost:3000/habits",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: trimmedName,
+          }),
+        }
+      );
 
-    await fetchHabits();
-    toast.success("習慣を追加しました");
-    setName("");
+      await fetchHabits();
+      toast.success("習慣を追加しました");
+      setName("");
+
+    } catch {
+      toast.error("習慣の追加に失敗しました");
+    }
   };
 
   //Habitの削除（Expressへ送信）
@@ -86,15 +97,20 @@ function App() {
       return;
     }
 
-    await fetch(
-      `http://localhost:3000/habits/${habitId}`,
-      {
-        method: "DELETE",
-      }
-    );
+    try {
+      await fetch(
+        `http://localhost:3000/habits/${habitId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    await fetchHabits();
-    toast.success("習慣を削除しました");
+      await fetchHabits();
+      toast.success("習慣を削除しました");
+
+    } catch {
+      toast.error("習慣の削除に失敗しました");
+    }
   };
 
   //Habit名の編集
@@ -106,24 +122,29 @@ function App() {
       return;
     }
 
-    await fetch(
-      `http://localhost:3000/habits/${habitId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: trimmedName,
-        }),
-      }
-    );
+    try {
+      await fetch(
+        `http://localhost:3000/habits/${habitId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: trimmedName,
+          }),
+        }
+      );
 
-    await fetchHabits();
-    toast.success("習慣を更新しました");
+      await fetchHabits();
+      toast.success("習慣を更新しました");
 
-    setEditingHabitId(null);
-    setEditingName("");
+      setEditingHabitId(null);
+      setEditingName("");
+
+    } catch {
+      toast.error("習慣の更新に失敗しました");
+    }
   };
 
   useEffect(() => {
