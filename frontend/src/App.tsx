@@ -30,12 +30,16 @@ function App() {
   const toggleHabit = async (habitId: string) => {
 
     try {
-      await fetch(
+      const response = await fetch(
         `http://localhost:3000/habits/${habitId}/toggle`,
         {
           method: "POST",
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to toggle habit");
+      }
 
       //クリックした習慣はトグル切り替え、他の習慣は切り替わらない
       setHabits(
@@ -67,7 +71,7 @@ function App() {
     }
 
     try {
-      await fetch(
+      const response = await fetch(
         "http://localhost:3000/habits",
         {
           method: "POST",
@@ -79,6 +83,10 @@ function App() {
           }),
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to add habit");
+      }
 
       await fetchHabits();
       toast.success("習慣を追加しました");
@@ -98,12 +106,16 @@ function App() {
     }
 
     try {
-      await fetch(
+      const response = await fetch(
         `http://localhost:3000/habits/${habitId}`,
         {
           method: "DELETE",
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete habit");
+      }
 
       await fetchHabits();
       toast.success("習慣を削除しました");
@@ -123,7 +135,7 @@ function App() {
     }
 
     try {
-      await fetch(
+      const response = await fetch(
         `http://localhost:3000/habits/${habitId}`,
         {
           method: "PATCH",
@@ -135,6 +147,10 @@ function App() {
           }),
         }
       );
+
+      if (!response.ok) {
+        throw new Error("Failed to update habit");
+      }
 
       await fetchHabits();
       toast.success("習慣を更新しました");
