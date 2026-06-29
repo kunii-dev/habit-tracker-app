@@ -197,7 +197,7 @@ function App() {
         onClick={addHabit}
         disabled={isLoading}
       >
-        追加
+        {isLoading ? "追加中..." : "追加"}
       </button>
 
       {habits.map((habit) => (
