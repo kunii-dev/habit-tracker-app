@@ -8,12 +8,20 @@ type Habit = {
 };
 
 function App() {
+  // データ
   const [habits, setHabits] = useState<Habit[]>([]);
+
+  //入力
   const [name, setName] = useState("");
-  const [editingHabitId, setEditingHabitId] =
-    useState<string | null>(null);
   const [editingName, setEditingName] =
     useState("");
+
+  //編集状態
+  const [editingHabitId, setEditingHabitId] =
+    useState<string | null>(null);
+
+  // ローディング
+  const [isLoading, setIsLoading] = useState(false);
 
   //ExpressからDBデータの一覧を取得する
   const fetchHabits = async () => {
@@ -70,6 +78,8 @@ function App() {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const response = await fetch(
         "http://localhost:3000/habits",
@@ -94,6 +104,8 @@ function App() {
 
     } catch {
       toast.error("習慣の追加に失敗しました");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -181,7 +193,10 @@ function App() {
         }}
       />
 
-      <button onClick={addHabit} >
+      <button
+        onClick={addHabit}
+        disabled={isLoading}
+      >
         追加
       </button>
 
